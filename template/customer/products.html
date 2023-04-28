@@ -1,59 +1,258 @@
-{% load static%}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
- <!-- bootstrap core css -->
- <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
- <!--owl slider stylesheet -->
- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
 
- <!-- font awesome style -->
- <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" />
+  <title>Flipkart</title>
+  <link href="{% static 'assets/img/favicon.png' %}" rel="icon" />
 
- <!-- Custom styles for this template -->
- <link href="{% static 'css/style.css' %}" rel="stylesheet" />
- <!-- responsive style -->
- <link href="{% static 'css/responsive.css' %}" rel="stylesheet" />
 
-{% block maincontent %}
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+  <!--owl slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+  <!-- font awesome style -->
+  <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" />
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="{% static 'css/responsive.css' %}" rel="stylesheet" />
+
+</head>
+<body>
+
+{% block header %}
+{% include "customer/partials/customerheader.html" %}
+{% endblock %}
+
+
 <section class="shop_section layout_padding">
-    <div class="container">
-      <div class="heading_container heading_center">
-        <h2>
-         Products
-         <h1>{{ products|length }}</h1>
-         
-        </h2>
-      </div>
-      <div class="row">
-  
+   <div class="container">
+     <div class="heading_container heading_center">
+       <h2>
+        Products
+       </h2>
+     </div>
+     <div class="row">
+ 
 
-        {% for product in products %}
-        <div class="col-sm-6 col-xl-4">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="{{product.product_picture.url}}"  alt="">
-              </div>
-              <div class="detail-box">
-                <h4>
-                  {{product.product_name}}
-                </h4>
-                <h6>
-                  Price:
-                  <span>
-                    ${{product.price}}
-                  </span>
-                </h6>
-              </div>
-             
-            </a>
+       {% for product in products %}
+       <div class="col-sm-6 col-xl-4">
+         <div class="box">
+           <a href="">
+             <div class="img-box">
+               <img src="{{product.product_picture.url}}"  alt="">
+             </div>
+             <div class="detail-box">
+               <h4>
+                 {{product.product_name}}
+               </h4>
+               <h6>
+                 Price:
+                 <span>
+                   ${{product.price}}
+                 </span>
+               </h6>
+             </div>
+
+
+             <div class="col-12 mb-3 align-self-end">
+               {% if user.is_authenticated%}
+               {% if usercart%}
+               {% for item in  usercart%}
+                   {% if item.product == product %}
+                   <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="removefromcart btn btn-outline-danger"><i class=" fas fa-times mr-2"></i>Remove from cart</a>
+                   {% else %}
+                   <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
+                   {% endif %}
+               {% endfor %}
+               {% else %}
+                   <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
+               {% endif %}  
+               {% endif %}   
+           </div>
+
+            
+           </a>
+         </div>
+       </div>
+     {% endfor %}
+
+
+   </div>
+   </div>
+ </section>
+
+
+
+
+
+ 
+
+
+  <!-- footer section -->
+  <footer class="footer_section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-lg-3 footer-col">
+          <div class="footer_detail">
+            <h4>
+              About
+            </h4>
+            <p>
+              Necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with
+            </p>
+            <div class="footer_social">
+              <a href="">
+                <i class="fa fa-facebook" aria-hidden="true"></i>
+              </a>
+              <a href="">
+                <i class="fa fa-twitter" aria-hidden="true"></i>
+              </a>
+              <a href="">
+                <i class="fa fa-linkedin" aria-hidden="true"></i>
+              </a>
+              <a href="">
+                <i class="fa fa-instagram" aria-hidden="true"></i>
+              </a>
+            </div>
           </div>
         </div>
-       
-      
-      {% endfor %}
+        <div class="col-md-6 col-lg-3 footer-col">
+          <div class="footer_contact">
+            <h4>
+              Reach at..
+            </h4>
+            <div class="contact_link_box">
+              <a href="">
+                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                <span>
+                  Location
+                </span>
+              </a>
+              <a href="">
+                <i class="fa fa-phone" aria-hidden="true"></i>
+                <span>
+                  Call +01 1234567890
+                </span>
+              </a>
+              <a href="">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <span>
+                  demo@gmail.com
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3 footer-col">
+          <div class="footer_contact">
+            <h4>
+              Subscribe
+            </h4>
+            <form action="#">
+              <input type="text" placeholder="Enter email" />
+              <button type="submit">
+                Subscribe
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3 footer-col">
+          <div class="map_container">
+            <div class="map">
+              <div id="googleMap"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-info">
+        <p>
+          &copy; <span id="displayYear"></span> All Rights Reserved By
+          <a href="https://html.design/">Free Html Templates</a>
+        </p>
+      </div>
     </div>
-      
-    </div>
-  </section>
+  </footer>
+  <!-- footer section -->
 
-{% endblock maincontent %}
+
+
+
+  <!-- fontawesome -->
+  <script src="https://kit.fontawesome.com/0ecb0ffc3a.js" crossorigin="anonymous"></script>
+
+  <!-- jQery -->
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  
+  <!-- popper js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <!-- bootstrap js -->
+  <script src="{% static 'js/bootstrap.js '%}"></script>
+  <!-- owl slider -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <!-- custom js -->
+  <script src="{% static 'js/custom.js' %}"></script>
+
+  <script type="text/javascript">
+    $(document).on('click','.addtocart',function(e){
+        e.preventDefault();
+        var prod_id = $(this).attr('product');
+        $.ajax(
+      {
+          type: "POST",
+          url: "{%url 'addtocart'%}",
+          dataType: 'json',
+          data: {product:prod_id},
+          success: function(data) {
+            $('#cartbtn'+prod_id).toggleClass('addtocart removefromcart');
+            $('#cartbtn'+prod_id).toggleClass('btn-outline-dark btn-outline-danger');
+            $('#cartbtn'+prod_id).html('<i class=" fas fa-times mr-2"></i>Remove from cart');
+          },
+          error: function() { 
+            alert("server error");
+          }
+      });
+    });
+
+    $(document).on('click','.removefromcart',function(e){
+        e.preventDefault();
+        var prod_id = $(this).attr('product');
+        $.ajax(
+      {
+          type: "POST",
+          url: "{%url 'removefromcart'%}",
+          dataType: 'json',
+          data: {product:prod_id},
+          success: function(data) {
+            $('#cartbtn'+prod_id).toggleClass('removefromcart addtocart');
+            $('#cartbtn'+prod_id).toggleClass('btn-outline-danger btn-outline-dark');
+            $('#cartbtn'+prod_id).html('<i class=" fas fa-cart-plus mr-2"></i>Add to cart');
+          },
+          error: function() { 
+            alert("server error");
+          }
+      });
+    });
+</script>
+</body>
+</html>
+
+
+
+ 

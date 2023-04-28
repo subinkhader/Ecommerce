@@ -83,8 +83,7 @@ def logoutcustomer(request):
 
 def homepage(request):
     products = Products.objects.filter(is_active=1)
-    print(products)
-    usercart = [];
+    usercart = []
     if request.user.is_authenticated:
         usercart = CustomerCart.objects.filter(customer = request.user)
     return render(request,'customer/products.html',{'products':products,'usercart':usercart})
