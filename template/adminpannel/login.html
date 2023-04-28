@@ -1,0 +1,55 @@
+{% extends "adminpannel/partials/adminpartials.html" %}
+
+{% block nocontainer %}
+<section class="">
+
+
+ <div class="container ">
+  <div class="mx_auto p-5 m-2 ">
+
+    <form action="{%url 'login' %}" method="POST">
+      {% csrf_token %}
+
+      <div class="form-group mt-4">
+        <label for="username">Username:</label>
+        <input type="text" class="form-control username" id="username" placeholder="Username..." name="username"/>
+      </div>
+
+      <div class="form-group mt-4">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control password" id="password" placeholder="Password..." name="password"/>
+      </div>
+      
+      <div class="form-group mt-4 ">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
+      </div>
+
+    </form>
+
+  </div>
+ </div>
+ 
+
+
+
+    <!-- <div class="container">
+      <form class="login-form d-flex justify-content-center " action="{%url 'login' %}" method="POST">
+        {%csrf_token%}
+          <div class="login-wrap col-md-5 p-5">
+            <p class="login-img"><i class="fa-solid fa-lock  "></i></p>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icon_profile"></i></span>
+              {{form.username}}
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icon_key_alt"></i></span>
+              {{form.password}}
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
+          </div>
+      </form>
+    </div> -->
+
+  
+</section>
+{% endblock %}
