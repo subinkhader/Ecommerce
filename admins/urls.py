@@ -17,5 +17,8 @@ urlpatterns = [
      path('manage-users', views.manageusers, name='manageusers'),
      path('change-user-status', views.changestatususer, name='changestatususer'),
      path('delete-user/<int:user_id>', views.deleteuser, name='deleteuser'),
+     path('view-user/<int:user_id>', views.viewuser, name='viewuser'),
+     path('admin-view-reports', views.adminviewreports, name='adminviewreports'),
+     path('todayssalesreport', views.todayssalesreport, name='todayssalesreport'),
     
 ]

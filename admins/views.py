@@ -15,6 +15,7 @@ from django.http import JsonResponse
 import os
 
 from django.contrib.auth.models import User, auth
+from customer.models import customerPayedProducts
 
 
 
@@ -178,7 +179,37 @@ def deleteuser(request,user_id):
     user_instance.delete()
     return HttpResponseRedirect(reverse('manageusers'))
         
-            
+        
+@user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
+def viewuser(request,user_id):
+    user_instance = User.objects.get(id = user_id)
+    orders = customerPayedProducts.objects.filter(customer = user_id, checkout_details__payment_complete =1)
+    return render(request,'adminpannel/userview.html',{'user':user_instance,'orders':orders})
+    
+ 
+ 
+import csv 
+import datetime
+from customer.models import CustomerCheckout
+    
+    
+@user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
+def adminviewreports(request):
+    return render(request,'adminpannel/adminreports.html',{})
+
+
+@user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
+def todayssalesreport(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="salesreport"'+str(datetime.date.today())+'".csv"'
+    writer = csv.writer(response)
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    sales = CustomerCheckout.objects.filter(payedon__range=(today_min, today_max))
+    writer.writerow(['Order_id', 'Payment_id', 'Amount', 'Reciept', 'Phonenum', 'Address'])
+    for sale in sales:
+        writer.writerow([sale.order_id, sale.payment_id, sale.total_amount, sale.reciept_num, sale.delivery_phone, sale.delivery_address])
+    return response
    
        
         

@@ -48,7 +48,7 @@
                       <a id="statusbtn{{user.id}}" href="" user_id ="{{user.id}}" class="enablebtn btn btn-sm btn-success">Enable</a>
                       {%endif%}
                     </td>
-                    <td><a target="_blank" href="" class="view btn btn-sm btn-primary">View</a></td>
+                    <td><a target="_blank" href="{% url 'viewuser' user_id=user.id%}" class="view btn btn-sm btn-primary">View</a></td>
                     <!-- viewuser -->
                     <td><a data-toggle="modal" data-target="#myModal3" user_id ="{{user.id}}" href="{% url 'deleteuser' user_id=user.id%}" class="deleteuser btn btn-sm btn-danger">Delete</a></td>
                 </tr>
