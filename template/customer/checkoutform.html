@@ -39,72 +39,43 @@
 {% endblock %}
 
 
-<section class="shop_section layout_padding">
-   <div class="container">
-     <div class="heading_container heading_center">
-       <h2>
-        Products
-       </h2>
-     </div>
-     <div class="row">
- 
 
-       {% for product in products %}
-       <div class="col-sm-6 col-xl-4">
-         <div class="box">
-           <a href="">
-             <div class="img-box">
-               <img src="{{product.product_picture.url}}"  alt="">
-             </div>
-             <div class="detail-box">
-               <h4>
-                 {{product.product_name}}
-               </h4>
-               <h6>
-                 Price:
-                 <span>
-                   ${{product.price}}
-                 </span>
-               </h6>
-             </div>
+<div class="col-12">
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-12 mt-3 text-center text-uppercase">
+            <h2>Payment</h2>
+        </div>
+    </div>
 
+    <main class="row">
+        <div class="col-12 bg-white py-3 mb-3">
+            <div class="row">
+                <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive text-center">
+                    <h3 class="text-info text-center">Click the pay button to initiate payment</h3>
+                    <h4 class="text-center">Total amount to be paid: <span class="text-danger">{{amount}}</span></h4>
+                    <button class="btn btn-sm btn-info mx-auto px-5" id="rzp-button1">Pay</button>
 
-             <div class="col-12 mb-3 align-self-end">
-               {% if user.is_authenticated%}
-               {% if usercart%}
-               {% for item in  usercart%}
-                    {% if item.product == product %}
-                    <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="removefromcart btn btn-outline-danger"><i class=" fas fa-times mr-2"></i>Remove from cart</a>
-                    {% else %}
-                    <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
-                    {% endif %}
-               {% endfor %}
-               {% else %}
-                   <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
-               {% endif %}  
-               {% endif %}   
-           </div>
+                </div>
+            </div>
+        </div>
 
-            
-           </a>
-         </div>
-       </div>
-     {% endfor %}
-
-
-   </div>
-   </div>
- </section>
+    </main>
 
 
 
 
 
- 
 
 
-  <!-- footer section -->
-  <footer class="footer_section">
+
+
+
+
+
+
+<!-- footer section -->
+<footer class="footer_section">
     <div class="container">
       <div class="row">
         <div class="col-md-6 col-lg-3 footer-col">
@@ -208,51 +179,56 @@
   </script>
   <!-- custom js -->
   <script src="{% static 'js/custom.js' %}"></script>
-
-  <script type="text/javascript">
-    $(document).on('click','.addtocart',function(e){
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    
+    var options = {
+        "key": "rzp_test_bAYqeZhjXN8pf0", // Enter the Key ID generated from the Dashboard
+        "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise or INR 500.
+        "currency": "{{currency}}",
+        "name": "{{companyname}}",
+        "order_id": "{{order_id}}",
+        "handler": function (response){
+            alert(response.razorpay_payment_id);
+            console.log(response)
+            sentPaymentInfo(response);
+        },
+        "prefill": {
+            "name": "{{username}}",
+            "email": "{{useremail}}",
+            "contact": "{{phonenum}}"
+        },
+        "notes": {},
+        "theme": {
+            "color": "#F37254"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        console.log("{{order_id}}");
         e.preventDefault();
-        var prod_id = $(this).attr('product');
+    }
+    function sentPaymentInfo(response){
         $.ajax(
-      {
+        {
           type: "POST",
-          url: "{%url 'addtocart'%}",
+          url: "{%url 'markpaymentsuccess'%}",
           dataType: 'json',
-          data: {product:prod_id},
+          data: {order_id:response.razorpay_order_id,
+                payment_id:response.razorpay_payment_id,
+                payment_signature:response.razorpay_signature},
           success: function(data) {
-            $('#cartbtn'+prod_id).toggleClass('addtocart removefromcart');
-            $('#cartbtn'+prod_id).toggleClass('btn-outline-dark btn-outline-danger');
-            $('#cartbtn'+prod_id).html('<i class=" fas fa-times mr-2"></i>Remove from cart');
+            alert('Payment success')
+            window.location.replace("{% url 'products' %}");
           },
           error: function() { 
             alert("server error");
           }
       });
-    });
+    }
+    </script>
 
-    $(document).on('click','.removefromcart',function(e){
-        e.preventDefault();
-        var prod_id = $(this).attr('product');
-        $.ajax(
-      {
-          type: "POST",
-          url: "{%url 'removefromcart'%}",
-          dataType: 'json',
-          data: {product:prod_id},
-          success: function(data) {
-            $('#cartbtn'+prod_id).toggleClass('removefromcart addtocart');
-            $('#cartbtn'+prod_id).toggleClass('btn-outline-danger btn-outline-dark');
-            $('#cartbtn'+prod_id).html('<i class=" fas fa-cart-plus mr-2"></i>Add to cart');
-          },
-          error: function() { 
-            alert("server error");
-          }
-      });
-    });
-</script>
+
 </body>
 </html>
-
-
-
- 

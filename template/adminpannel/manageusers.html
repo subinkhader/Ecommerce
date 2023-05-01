@@ -1,0 +1,122 @@
+{% extends "adminpannel/partials/adminpartials.html" %}
+
+{% block header %}
+    {% include "adminpannel/partials/adminheader.html"%}
+{% endblock %}
+
+{% block sidenav %}
+    {% include "adminpannel/partials/adminsidenav.html"%}
+{% endblock %}
+
+
+
+{%block content%}
+<section class="wrapper">
+    <div class="row">
+        <div class="col-md-12">
+          <section class="panel">
+            <header class="panel-heading no-border">
+              <h1 style="font-weight: 700;">Manage Users
+              </h1>
+            </header>
+            {%if users %}
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>User Name</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                  <th>View</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%for user in users%}
+                <tr>
+                    <td>{{user.username}}</td>
+                    <td>
+                      {% if user.is_active == 1 %}
+                      <strong id="statustext{{user.id}}" class="text-success">Active</strong>
+                      {%else%}
+                      <strong id="statustext{{user.id}}" class="text-danger">Inactive</strong>
+                      {%endif%}
+                    </td>
+                    <td>
+                      {% if user.is_active == 1 %}
+                      <a id="statusbtn{{user.id}}" href="" user_id ="{{user.id}}" class="disablebtn btn btn-sm btn-danger">Disable</a>
+                      {%else%}
+                      <a id="statusbtn{{user.id}}" href="" user_id ="{{user.id}}" class="enablebtn btn btn-sm btn-success">Enable</a>
+                      {%endif%}
+                    </td>
+                    <td><a target="_blank" href="" class="view btn btn-sm btn-primary">View</a></td>
+                    <!-- viewuser -->
+                    <td><a data-toggle="modal" data-target="#myModal3" user_id ="{{user.id}}" href="{% url 'deleteuser' user_id=user.id%}" class="deleteuser btn btn-sm btn-danger">Delete</a></td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+            {%else%}
+            <div class="alert alert-block alert-danger fade in">
+                <h4>There are no users to show.</h4>
+              </div>
+            {%endif%}
+          </section>
+        </div>
+    </div>
+</section>
+
+
+
+{% endblock %}
+{%block scripts%}
+<script type="text/javascript">
+  $(document).on('click','.disablebtn',function(e){
+    e.preventDefault();
+    var user_id = $(this).attr('user_id');
+    $.ajax(
+      {
+          type: "POST",
+          url: "{%url 'changestatususer'%}",
+          dataType: 'json',
+          data: {action:'disable',user_id:user_id},
+          success: function(data) {
+            $('#statustext'+user_id).text('Inactive');
+            $('#statustext'+user_id).toggleClass('text-success text-danger');
+            $('#statusbtn'+user_id).toggleClass('disablebtn enablebtn');
+            $('#statusbtn'+user_id).toggleClass('btn-danger btn-success');
+            $('#statusbtn'+user_id).text('Enable');
+          },
+          error: function() { 
+            alert("server error");
+          }
+      });
+  });
+
+  $(document).on('click','.enablebtn',function(e){
+    e.preventDefault();
+    var user_id = $(this).attr('user_id');
+    $.ajax(
+      {
+          type: "POST",
+          url: "{%url 'changestatususer'%}",
+          dataType: 'json',
+          data: {action:'enable',user_id:user_id},
+          success: function(data) {
+            $('#statustext'+user_id).text('Active');
+            $('#statustext'+user_id).toggleClass('text-danger text-success');
+            $('#statusbtn'+user_id).toggleClass('enablebtn disablebtn');
+            $('#statusbtn'+user_id).toggleClass('btn-success btn-danger');
+            $('#statusbtn'+user_id).text('Disable');
+          },
+          error: function() { 
+            alert("server error");
+          }
+      });
+  });
+</script>
+
+
+
+
+{%endblock%}
+
