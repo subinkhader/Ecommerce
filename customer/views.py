@@ -44,8 +44,9 @@ def registercustomer(request):
                    last_name = last_name,
                    username = username,
                    email = email,
-                   password = pass1  
-               )
+                   password = pass1
+                     
+                )
                user.save()
                messages.info(request,'user is created')
                return redirect('logincustomer')
